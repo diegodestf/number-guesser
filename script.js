@@ -1,6 +1,6 @@
 let min = 1,
     max = 10,
-    winningNum = 2,
+    winningNum = getRandomNum(min, max),
     guessesLeft = 3
 
 const game = document.querySelector('#game'),
@@ -13,8 +13,12 @@ const game = document.querySelector('#game'),
 minNum.textContent = min
 maxNum.textContent = max
 
+game.addEventListener('mousedown', (e) => {
+    if (e.target.className === 'play-again') window.location.reload()
+})
+
 guessBtn.addEventListener('click', () => {
-    
+
     let guess = parseInt(guessInput.value)
     
     if (isNaN(guess) || guess < min || guess > max) {
@@ -29,19 +33,18 @@ guessBtn.addEventListener('click', () => {
     } else {
         
         guessesLeft--
-        
-        gameOver(false, `Your guess is incorrect. You have ${guessesLeft} guesses left` )
-
-        guessInput.style.borderColor = 'red'
 
         if (guessesLeft === 0) {
 
             gameOver(false, `You've lost! The correct number was ${winningNum}`)
 
-            guessInput.disabled = true
+        } else {
 
-            guessBtn.disabled = true
+        guessInput.style.borderColor = 'red'
 
+        guessInput.value = ''
+
+        setMessage(`Your guess is incorrect. You have ${guessesLeft} guesses left`, 'red')
         }
     }
 })
@@ -57,7 +60,6 @@ function gameOver (won, msg) {
 
     won === true ? color = 'green' : color = 'red'
 
-    guessInput.disabled = true
 
     guessInput.style.borderColor = color
 
@@ -65,4 +67,12 @@ function gameOver (won, msg) {
 
     setMessage(msg)
 
+    guessBtn.value = 'Play again'
+    guessBtn.className += 'play-again'
+
+}
+
+function getRandomNum (min, max) {
+
+    return Math.floor(Math.random() * (max - min + 1) + min)
 }
